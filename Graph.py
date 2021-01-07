@@ -40,6 +40,17 @@ class Graph:
             end_node.connections.remove(start_node)
             to_remove -= 1
 
+    def get_node_with_name(self, name):
+        for node in self.all_nodes:
+            if node.name == name:
+                return node
+
+    def get_all_nodes_names(self):
+        names = []
+        for node in self.all_nodes:
+            names.append(node.name)
+        return names
+
 
 class Node:
     connections = []
@@ -59,7 +70,7 @@ class Node:
         self.x = random.randint(min_range, max_range)
         self.y = random.randint(min_range, max_range)
         self.z = random.randint(0, z_range)
-        print(self.x, self.y, self.z)
+        print(self.name, self.x, self.y, self.z)
 
     def create_all_connections(self, nodes):
         self.connections = list(nodes)
@@ -67,7 +78,7 @@ class Node:
     def create_connection(self, node):
         self.connections.append(node)
 
-    def get_conection_names(self):
+    def get_connection_names(self):
         names = []
         for node in self.connections:
             names.append(node.name)
@@ -100,8 +111,6 @@ class Leaf(Node):
     def cost_to_travel_to_any(self, goal, symmetrical=True):
         finish = [goal.x, goal.y, goal.z]
         start = [self.x, self.y, self.z]
-        if goal.name not in self.get_conection_names():
-            print("Panie przecie tam nie da się stąd dojechać")
         _sum = 0
         for i in range(3):
             partial = (start[i]-finish[i])**2
@@ -117,20 +126,37 @@ class Leaf(Node):
 
 
 class Tree:
-    def __init__(self, root):
+    def __init__(self, root, graph):
         self.root = Leaf(root, None)
-        self.create_leafs(self.root)
+        self.graph = graph
+        self.all_node_names = self.graph.get_all_nodes_names()
+        #self.create_leafs(self.root)
 
     def create_leafs(self, leaf):
         children = []
+        parents = check_parent_names(leaf)
         for child in leaf.connections:
-            parents = check_parent_names(leaf)
             if child.name in parents:
                 continue
             new_leaf = Leaf(child, leaf)
             self.create_leafs(new_leaf)
             children.append(new_leaf)
         leaf.connections = children
+
+    def create_connected_leafs(self, leaf):
+        children = []
+        parents = check_parent_names(leaf)
+        for child in leaf.connections:
+            if child.name in parents:
+                continue
+            children.append(Leaf(child, leaf))
+
+        parents.append(leaf.name)
+        if set(parents) == set(self.all_node_names):
+            if self.root.name in self.graph.get_node_with_name(leaf.name).get_connection_names():
+                children.append(Leaf(self.graph.get_node_with_name(self.root.name), leaf))
+        leaf.connections = children
+        return leaf.connections
 
 
 def calc_cost_form_leaf_without_returning(leaf, symmetrical=True):
