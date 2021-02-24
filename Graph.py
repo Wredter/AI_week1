@@ -91,7 +91,6 @@ class Leaf(Node):
         self.connections = node.connections
         self.parent = parent
         self.cost_to_get_to = 0
-        self.d_connections = {}
 
     def cost_to_travel(self, symmetrical=True):
         start = [self.parent.x, self.parent.y, self.parent.z]
@@ -124,12 +123,6 @@ class Leaf(Node):
                 return cost * 0.9
             else:
                 return cost * 1.1
-
-    def get_d_connected_leafs(self):
-        _list = []
-        for key in self.d_connections:
-            _list.append(self.d_connections[key][0])
-        return _list
 
 
 class Tree:
