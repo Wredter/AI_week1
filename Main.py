@@ -8,7 +8,8 @@ import os
 os.remove("logfile.log")
 logging.basicConfig(filename="logfile.log", level=logging.INFO)
 
-graph = Graph(7)
+
+graph = Graph(10)
 graph.remove_connections(0)
 model = Algorithm(graph)
 start_time = time.time()
@@ -33,6 +34,8 @@ logging.info(f'Time BFS: {times[0]}')
 logging.info(f'Time DFS: {times[1]}')
 logging.info(f'Time NN: {times[2]}')
 logging.info(f'Time Dijkstra: {times[3]}')
+logging.info(f'Time BFS: {times[0]}')
+logging.info(f'Time DFS: {times[1]}')
 logging.info(f'costs lenght BFS: {len(costs1)}')
 logging.info(f'costs lenght DFS: {len(costs2)}')
 logging.info(f'All paths BFS: {costs1}')

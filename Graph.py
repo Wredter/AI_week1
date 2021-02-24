@@ -84,30 +84,6 @@ class Node:
             names.append(node.name)
         return names
 
-    def get_connected_node(self, name):
-        for node in self.connections:
-            if node.name == name:
-                return node
-
-    def cost_to_travel_to_connected_node(self, name, symmetrical=True):
-        if name not in self.get_connection_names():
-            print("Not connected")
-        f_node = self.get_connected_node(name)
-        start = [self.x, self.y, self.z]
-        finish = [f_node.x, f_node.y, f_node.z]
-        _sum = 0
-        for i in range(3):
-            partial = (start[i] - finish[i]) ** 2
-            _sum += partial
-        cost = math.sqrt(_sum)
-        if symmetrical:
-            return cost
-        else:
-            if start[2] > finish[2]:
-                return cost * 0.9
-            else:
-                return cost * 1.1
-
 
 class Leaf(Node):
     def __init__(self, node, parent):
@@ -193,13 +169,9 @@ class Tree:
 def calc_cost_form_leaf_without_returning(leaf, symmetrical=True):
     parent = leaf.parent
     cost = 0
-    last = False
-    while parent is not None and not last:
+    while parent is not None:
         cost += leaf.cost_to_travel(symmetrical)
-        leaf = parent
         parent = parent.parent
-        if parent is None:
-            last = True
     return cost
 
 
@@ -208,7 +180,6 @@ def calc_cost_form_leaf(leaf, goal, symmetrical=True):
     cost = leaf.cost_to_travel_to_any(goal)
     while parent is not None:
         cost += leaf.cost_to_travel(symmetrical)
-        leaf = parent
         parent = parent.parent
     return cost
 

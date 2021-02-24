@@ -11,9 +11,8 @@ class Algorithm:
 
     def __init__(self, graph, symmetrical=True):
         self.graph = graph
-        self.start_node = random.choice(self.graph.all_nodes)
         self.symmetrical = symmetrical
-        self.tree = Tree(self.start_node, self.graph)
+        self.tree = Tree(random.choice(self.graph.all_nodes), self.graph)
 
     def BFS(self):
         costs = []
@@ -143,7 +142,6 @@ def create_tree_from_dict(dictionary):
                 root = _leaf
                 not_found = False
     return root
-
 
 
 
